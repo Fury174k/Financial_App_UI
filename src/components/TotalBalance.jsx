@@ -33,7 +33,7 @@ export default function TotalBalance({ className }) {
     if (useCache) return;
 
     const fetchTotalBalance = fetch(
-      "http://localhost:8000/api/total-balance/",
+      "https://financial-tracker-api-iq2a.onrender.com/api/total-balance/",
       {
         headers: {
           Authorization: `Token ${authToken}`,
@@ -44,8 +44,9 @@ export default function TotalBalance({ className }) {
       return res.json();
     });
 
-    const fetchAccounts = fetch("http://localhost:8000/api/accounts/", {
-      headers: {
+    const fetchAccounts = fetch("https://financial-tracker-api-iq2a.onrender.com/api/accounts/", {
+      headers:
+      {
         Authorization: `Token ${authToken}`,
       },
     }).then((res) => {

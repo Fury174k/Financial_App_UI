@@ -15,7 +15,7 @@ export default function TransactionHistory({ className }) {
       return;
     }
 
-    fetch("http://localhost:8000/api/transactions/", {
+    fetch("https://financial-tracker-api-iq2a.onrender.com/api/transactions/", {
       headers: {
         Authorization: `Token ${authToken}`,
       },
@@ -33,7 +33,7 @@ export default function TransactionHistory({ className }) {
 
   const handleDelete = async (id) => {
     try {
-      const response = await fetch(`http://localhost:8000/api/transactions/${id}/`, {
+      const response = await fetch(`https://financial-tracker-api-iq2a.onrender.com/api/transactions/${id}/`, {
         method: "DELETE",
         headers: {
           Authorization: `Token ${authToken}`,

@@ -23,7 +23,7 @@ export default function Reports({ className }) {
   useEffect(() => {
     if (!authToken) return;
 
-    fetch("http://localhost:8000/api/transactions/", {
+    fetch("https://financial-tracker-api-iq2a.onrender.com/api/transactions/", {
       headers: {
         Authorization: `Token ${authToken}`,
       },

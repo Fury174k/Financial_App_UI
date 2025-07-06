@@ -23,7 +23,7 @@ export default function Savings({ className }) {
   const fetchSavings = async () => {
     const token = localStorage.getItem("authToken");
     try {
-      const response = await fetch("http://localhost:8000/api/savings/", {
+      const response = await fetch("https://financial-tracker-api-iq2a.onrender.com/api/savings/", {
         headers: { Authorization: `Token ${token}` },
       });
 
@@ -50,7 +50,7 @@ export default function Savings({ className }) {
     setContributionError("");
     const token = localStorage.getItem("authToken");
     try {
-      const res = await fetch("http://localhost:8000/api/savings/contribute/", {
+      const res = await fetch("https://financial-tracker-api-iq2a.onrender.com/api/savings/contribute/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -91,7 +91,7 @@ export default function Savings({ className }) {
   const handleDeleteGoal = async (goalId) => {
     const token = localStorage.getItem("authToken");
     try {
-      const res = await fetch(`http://localhost:8000/api/savings/${goalId}/`, {
+      const res = await fetch(`https://financial-tracker-api-iq2a.onrender.com/api/savings/${goalId}/`, {
         method: "DELETE",
         headers: { Authorization: `Token ${token}` },
       });

@@ -9,7 +9,7 @@ export default function IncomeVsExpense({ className }) {
   useEffect(() => {
     const token = localStorage.getItem("authToken");
     setIsLoading(true);
-    fetch("http://localhost:8000/api/transactions/", {
+    fetch("https://financial-tracker-api-iq2a.onrender.com/api/transactions/", {
       headers: {
         Authorization: `Token ${token}`,
       },

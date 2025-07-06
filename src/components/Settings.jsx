@@ -22,14 +22,14 @@ export default function Settings() {
       setLoading(true);
       try {
         // Fetch accounts
-        const accRes = await fetch("http://localhost:8000/api/accounts/", {
+        const accRes = await fetch("https://financial-tracker-api-iq2a.onrender.com/api/accounts/", {
           headers: { Authorization: `Token ${authToken}` },
         });
         const accData = accRes.ok ? await accRes.json() : [];
         setAccounts(accData);
 
         // Fetch user profile (assuming /api/profile/ exists)
-        const profRes = await fetch("http://localhost:8000/api/profile/", {
+        const profRes = await fetch("https://financial-tracker-api-iq2a.onrender.com/api/profile/", {
           headers: { Authorization: `Token ${authToken}` },
         });
         const profData = profRes.ok ? await profRes.json() : {};
@@ -76,10 +76,10 @@ export default function Settings() {
       let method = "PATCH";
       let body = {};
       if (type === "account") {
-        url = `http://localhost:8000/api/accounts/${id}/`;
+        url = `https://financial-tracker-api-iq2a.onrender.com/api/accounts/${id}/`;
         body = editing[`account-${id}`];
       } else if (type === "profile") {
-        url = `http://localhost:8000/api/profile/`;
+        url = `https://financial-tracker-api-iq2a.onrender.com/api/profile/`;
         body = editing[`profile-${id}`];
       }
       const res = await fetch(url, {
@@ -95,12 +95,12 @@ export default function Settings() {
         setEditing((prev) => ({ ...prev, [`${type}-${id}`]: undefined }));
         // Refresh data
         if (type === "account") {
-          const accRes = await fetch("http://localhost:8000/api/accounts/", {
+          const accRes = await fetch("https://financial-tracker-api-iq2a.onrender.com/api/accounts/", {
             headers: { Authorization: `Token ${authToken}` },
           });
           setAccounts(accRes.ok ? await accRes.json() : []);
         } else if (type === "profile") {
-          const profRes = await fetch("http://localhost:8000/api/profile/", {
+          const profRes = await fetch("https://financial-tracker-api-iq2a.onrender.com/api/profile/", {
             headers: { Authorization: `Token ${authToken}` },
           });
           setProfile(profRes.ok ? await profRes.json() : {});
@@ -123,7 +123,7 @@ export default function Settings() {
   const confirmDeleteAccount = async () => {
     setLoading(true);
     try {
-      const res = await fetch(`http://localhost:8000/api/accounts/${showDeleteConfirm}/`, {
+      const res = await fetch(`https://financial-tracker-api-iq2a.onrender.com/api/accounts/${showDeleteConfirm}/`, {
         method: "DELETE",
         headers: { Authorization: `Token ${authToken}` },
       });

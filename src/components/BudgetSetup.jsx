@@ -16,7 +16,7 @@ export default function BudgetSetup() {
     const month = now.getMonth() + 1;
     const year = now.getFullYear();
     try {
-      const res = await fetch("http://localhost:8000/api/budget/current/", {
+      const res = await fetch("https://financial-tracker-api-iq2a.onrender.com/api/budget/current/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

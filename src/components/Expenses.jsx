@@ -33,7 +33,7 @@ export default function Expenses({ className }) {
     const token = localStorage.getItem("authToken");
     try {
       // Fetch current month's budget
-      const budgetResponse = await fetch("http://localhost:8000/api/budget/current/", {
+      const budgetResponse = await fetch("https://financial-tracker-api-iq2a.onrender.com/api/budget/current/", {
         headers: { Authorization: `Token ${token}` }
       });
       let budgetAmount = null;
@@ -43,7 +43,7 @@ export default function Expenses({ className }) {
         setMonthlyBudget(budgetAmount);
       }
       // Fetch transactions
-      const transactionsResponse = await fetch("http://localhost:8000/api/transactions/", {
+      const transactionsResponse = await fetch("https://financial-tracker-api-iq2a.onrender.com/api/transactions/", {
         headers: { Authorization: `Token ${token}` }
       });
       let totalExpenses = 0;
