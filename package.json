@@ -14,22 +14,21 @@
     "howler": "^2.2.4",
     "lottie-react": "^2.4.1",
     "lucide-react": "^0.522.0",
-    "react": "^18.2.0",
+    "react": "^19.1.0",
     "react-credit-cards-2": "^1.0.3",
-    "react-dom": "^18.2.0",
+    "react-dom": "^19.1.0",
     "react-router-dom": "^7.6.2",
     "react-scripts": "5.0.1",
     "recharts": "^2.15.3",
-    "web-vitals": "^2.1.4",
-    "tailwindcss": "^4.1.11"
+    "tailwindcss": "^4.1.10",
+    "web-vitals": "^2.1.4"
   },
   "scripts": {
-  "start": "craco start",
-  "build:css": "node_modules/.bin/tailwindcss -i ./src/input.css -o ./src/output.css --minify",
-  "build": "npm run build:css && craco build",
-  "test": "craco test",
-  "eject": "react-scripts eject"
-},
+    "start": "craco start",
+    "build": "craco build",
+    "test": "craco test",
+    "eject": "react-scripts eject"
+  },
   "eslintConfig": {
     "extends": [
       "react-app",
@@ -47,8 +46,5 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  },
-  "devDependencies": {
-   
   }
 }
