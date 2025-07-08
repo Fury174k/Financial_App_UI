@@ -5,27 +5,44 @@ export default function Register() {
     const [formData, setFormData] = useState({
         username: '',
         email: '',
-        password: ''
+        password: '',
+        confirmPassword: ''
     });
     const [error, setError] = useState('');
+    const [profilePic, setProfilePic] = useState(null);
     const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        if (formData.password !== formData.confirmPassword) {
+            setError('Passwords do not match');
+            return;
+        }
         try {
+            const form = new FormData();
+            form.append('username', formData.username);
+            form.append('email', formData.email);
+            form.append('password', formData.password);
+            form.append('confirm_password', formData.confirmPassword);
+            if (profilePic) {
+                form.append('profile_picture', profilePic);
+            }
             const response = await fetch('https://financial-tracker-api-iq2a.onrender.com/api/register/', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(formData),
+                body: form,
             });
-            
             if (response.ok) {
                 navigate('/login');
             } else {
                 const data = await response.json();
-                setError(data.message || 'Registration failed');
+                // Collect all error messages from the backend
+                let errorMsg = 'Registration failed';
+                if (typeof data === 'object' && data !== null) {
+                    errorMsg = Object.entries(data)
+                        .map(([field, messages]) => `${field}: ${Array.isArray(messages) ? messages.join(', ') : messages}`)
+                        .join(' | ');
+                }
+                setError(errorMsg);
             }
         } catch (err) {
             setError('Network error');
@@ -40,10 +57,10 @@ export default function Register() {
     };
 
     return (
-        <div className="max-w-md mx-auto mt-10 p-4 bg-white rounded shadow">
-            <h2 className="text-2xl font-bold text-indigo-800 mb-6">Register</h2>
-            {error && <p className="text-red-500 mb-4">{error}</p>}
-            <form onSubmit={handleSubmit}>
+        <div className="max-w-md p-4 mx-auto mt-10 bg-white rounded shadow">
+            <h2 className="mb-6 text-2xl font-bold text-indigo-800">Register</h2>
+            {error && <p className="mb-4 text-red-500">{error}</p>}
+            <form onSubmit={handleSubmit} encType="multipart/form-data">
                 <div className="mb-4">
                     <label className="block mb-2">Username</label>
                     <input
@@ -77,7 +94,27 @@ export default function Register() {
                         required
                     />
                 </div>
-                <button type="submit" className="w-full bg-blue-500 text-white p-2 rounded">
+                <div className="mb-4">
+                    <label className="block mb-2">Confirm Password</label>
+                    <input
+                        type="password"
+                        name="confirmPassword"
+                        value={formData.confirmPassword}
+                        onChange={handleChange}
+                        className="w-full p-2 border rounded"
+                        required
+                    />
+                </div>
+                <div className="mb-4">
+                    <label className="block mb-2">Profile Picture</label>
+                    <input
+                        type="file"
+                        accept="image/*"
+                        onChange={e => setProfilePic(e.target.files[0])}
+                        className="w-full p-2 border rounded"
+                    />
+                </div>
+                <button type="submit" className="w-full p-2 text-white bg-blue-500 rounded">
                     Register
                 </button>
             </form>
