@@ -24,12 +24,13 @@
     "tailwindcss": "^4.1.11"
   },
   "scripts": {
-    "start": "craco start",
-    "build:css": "npx tailwindcss -i ./src/input.css -o ./src/output.css --minify",
-    "build": "npm run build:css && craco build",
-    "test": "craco test",
-    "eject": "react-scripts eject"
-  },
+  "start": "craco start",
+  "build:css": "node_modules/.bin/tailwindcss -i ./src/input.css -o ./src/output.css --minify",
+  "build": "npm run build:css && craco build",
+  "test": "craco test",
+  "eject": "react-scripts eject"
+},
+
   "eslintConfig": {
     "extends": [
       "react-app",
