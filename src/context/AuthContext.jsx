@@ -13,7 +13,7 @@ export const AuthProvider = ({ children }) => {
  useEffect(() => {
    if (authToken) {
      setLoading(true);
-     fetch("http://localhost:8000/api/user/", {
+     fetch("https://financial-tracker-api-iq2a.onrender.com/api/user/", {
        headers: {
          Authorization: `Token ${authToken}`,
        },
