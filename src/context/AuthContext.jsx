@@ -36,7 +36,7 @@ export const AuthProvider = ({ children }) => {
      localStorage.removeItem("authToken"); // Clear any previous token
      setAuthToken(null);
      setUser(null);
-     const res = await fetch("http://localhost:8000/api/login/", {
+     const res = await fetch("https://financial-tracker-api-iq2a.onrender.com/api/login/", {
        method: "POST",
        headers: { "Content-Type": "application/json" },
        body: JSON.stringify({ username, password }),
@@ -49,7 +49,7 @@ export const AuthProvider = ({ children }) => {
      setAuthToken(data.token);
 
      // fetch user after login
-     const userRes = await fetch("http://localhost:8000/api/user/", {
+     const userRes = await fetch("https://financial-tracker-api-iq2a.onrender.com/api/user/", {
        headers: {
          Authorization: `Token ${data.token}`,
        },
@@ -70,7 +70,7 @@ export const AuthProvider = ({ children }) => {
      localStorage.removeItem('authToken'); // Clear any previous token
      setAuthToken(null);
      setUser(null);
-     const response = await fetch('http://localhost:8000/api/auth/google/', {
+     const response = await fetch('https://financial-tracker-api-iq2a.onrender.com/api/auth/google/', {
        method: 'POST',
        headers: {
          'Content-Type': 'application/json',
