@@ -97,8 +97,8 @@ export default function Register() {
                     <label className="block mb-2">Confirm Password</label>
                     <input
                         type="password"
-                        name="confirmPassword"
-                        value={formData.confirmPassword}
+                        name="password2"
+                        value={formData.password2}
                         onChange={handleChange}
                         className="w-full p-2 border rounded"
                         required
