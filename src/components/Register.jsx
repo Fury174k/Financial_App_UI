@@ -6,7 +6,7 @@ export default function Register() {
         username: '',
         email: '',
         password: '',
-        confirmPassword: ''
+        password2: ''  // ✅ Rename to match backend
     });
     const [error, setError] = useState('');
     const [profilePic, setProfilePic] = useState(null);
@@ -14,7 +14,7 @@ export default function Register() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (formData.password !== formData.confirmPassword) {
+        if (formData.password !== formData.password2) {
             setError('Passwords do not match');
             return;
         }
@@ -23,7 +23,7 @@ export default function Register() {
             form.append('username', formData.username);
             form.append('email', formData.email);
             form.append('password', formData.password);
-            form.append('confirm_password', formData.confirmPassword);
+            form.append('password2', formData.password2); // ✅ Correct key
             if (profilePic) {
                 form.append('profile_picture', profilePic);
             }
@@ -35,7 +35,6 @@ export default function Register() {
                 navigate('/login');
             } else {
                 const data = await response.json();
-                // Collect all error messages from the backend
                 let errorMsg = 'Registration failed';
                 if (typeof data === 'object' && data !== null) {
                     errorMsg = Object.entries(data)
