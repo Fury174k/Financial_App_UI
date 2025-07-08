@@ -32,38 +32,38 @@ export const AuthProvider = ({ children }) => {
  }, [authToken]);
 
  const login = async (username, password) => {
-   try {
-     localStorage.removeItem("authToken"); // Clear any previous token
-     setAuthToken(null);
-     setUser(null);
-     const res = await fetch("https://financial-tracker-api-iq2a.onrender.com/api/login/", {
-       method: "POST",
-       headers: { "Content-Type": "application/json" },
-       body: JSON.stringify({ username, password }),
-     });
+  try {
+    const res = await fetch("https://financial-tracker-api-iq2a.onrender.com/api/login/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ username, password }),
+    });
 
-     if (!res.ok) throw new Error("Login failed");
+    const data = await res.json(); // ✅ get backend message
 
-     const data = await res.json();
-     localStorage.setItem("authToken", data.token);
-     setAuthToken(data.token);
+    if (!res.ok) {
+      console.error("Backend response:", data);
+      throw new Error(data.non_field_errors?.[0] || "Login failed");
+    }
 
-     // fetch user after login
-     const userRes = await fetch("https://financial-tracker-api-iq2a.onrender.com/api/user/", {
-       headers: {
-         Authorization: `Token ${data.token}`,
-       },
-     });
+    localStorage.setItem("authToken", data.token);
+    setAuthToken(data.token);
 
-     const userData = await userRes.json();
-     setUser(userData);
+    const userRes = await fetch("https://financial-tracker-api-iq2a.onrender.com/api/user/", {
+      headers: { Authorization: `Token ${data.token}` },
+    });
 
-     return true;
-   } catch (err) {
-     console.error("Login error:", err);
-     return false;
-   }
- };
+    const userData = await userRes.json();
+    setUser(userData);
+
+    return true;
+  } catch (err) {
+    console.error("Login error:", err.message);
+    return false;
+  }
+};
 
  const googleLogin = async (token) => {
    try {
