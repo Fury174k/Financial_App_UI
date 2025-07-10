@@ -9,7 +9,7 @@ export default function IncomeVsExpense({ className }) {
   useEffect(() => {
     const token = localStorage.getItem("authToken");
     setIsLoading(true);
-    fetch("https://financial-tracker-api-iq2a.onrender.com/api/transactions/", {
+    fetch("https://financial-tracker-api-1wlt.onrender.com/api/transactions/", {
       headers: {
         Authorization: `Token ${token}`,
       },
@@ -48,7 +48,7 @@ export default function IncomeVsExpense({ className }) {
       .finally(() => setIsLoading(false));
   }, []);
 
-  const spentRatio = income > 0 ? (expenses / income) * 100 : 0;
+  const spentRatio = income > 0 ? (expenses / income) + 100 : 0;
   const balance = income - expenses;
 
   const getStatusMessage = () => {

@@ -27,7 +27,7 @@ export default function Register() {
             if (profilePic) {
                 form.append('profile_picture', profilePic);
             }
-            const response = await fetch('https://financial-tracker-api-iq2a.onrender.com/api/register/', {
+            const response = await fetch('https://financial-tracker-api-1wlt.onrender.com/api/register/', {
                 method: 'POST',
                 body: form,
             });

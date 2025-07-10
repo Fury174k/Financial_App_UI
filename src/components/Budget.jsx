@@ -9,14 +9,14 @@ export default function Budget({ className, refreshTrigger }) {
   const fetchData = async () => {
     const token = localStorage.getItem("authToken");
     try {
-      const budgetRes = await fetch("https://financial-tracker-api-iq2a.onrender.com/api/budget/current/", {
+      const budgetRes = await fetch("https://financial-tracker-api-1wlt.onrender.com/api/budget/current/", {
         headers: { Authorization: `Token ${token}` },
       });
       const budgetData = await budgetRes.json();
       setBudget(budgetData.amount);
 
       // Fetch expenses instead of transactions
-      const expRes = await fetch("https://financial-tracker-api-iq2a.onrender.com/api/expenses/", {
+      const expRes = await fetch("https://financial-tracker-api-1wlt.onrender.com/api/expenses/", {
         headers: { Authorization: `Token ${token}` },
       });
       const expData = await expRes.json();

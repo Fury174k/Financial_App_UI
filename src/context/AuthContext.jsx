@@ -13,7 +13,7 @@ export const AuthProvider = ({ children }) => {
  useEffect(() => {
    if (authToken) {
      setLoading(true);
-     fetch("https://financial-tracker-api-iq2a.onrender.com/api/user/", {
+     fetch("https://financial-tracker-api-1wlt.onrender.com/api/user/", {
        headers: {
          Authorization: `Token ${authToken}`,
        },
@@ -33,7 +33,7 @@ export const AuthProvider = ({ children }) => {
 
  const login = async (username, password) => {
   try {
-    const res = await fetch("https://financial-tracker-api-iq2a.onrender.com/api/login/", {
+    const res = await fetch("https://financial-tracker-api-1wlt.onrender.com/api/login/", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -51,7 +51,7 @@ export const AuthProvider = ({ children }) => {
     localStorage.setItem("authToken", data.token);
     setAuthToken(data.token);
 
-    const userRes = await fetch("https://financial-tracker-api-iq2a.onrender.com/api/user/", {
+    const userRes = await fetch("https://financial-tracker-api-1wlt.onrender.com/api/user/", {
       headers: { Authorization: `Token ${data.token}` },
     });
 
@@ -70,7 +70,7 @@ export const AuthProvider = ({ children }) => {
      localStorage.removeItem('authToken'); // Clear any previous token
      setAuthToken(null);
      setUser(null);
-     const response = await fetch('https://financial-tracker-api-iq2a.onrender.com/api/auth/google/', {
+     const response = await fetch('https://financial-tracker-api-1wlt.onrender.com/api/auth/google/', {
        method: 'POST',
        headers: {
          'Content-Type': 'application/json',

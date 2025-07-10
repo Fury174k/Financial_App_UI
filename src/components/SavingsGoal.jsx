@@ -15,7 +15,7 @@ export default function SavingsGoal() {
     setError("");
     const token = localStorage.getItem("authToken");
     try {
-      const res = await fetch("https://financial-tracker-api-iq2a.onrender.com/api/savings/", {
+      const res = await fetch("https://financial-tracker-api-1wlt.onrender.com/api/savings/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
