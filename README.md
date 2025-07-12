@@ -20,6 +20,10 @@ A sleek, modern, and responsive React-based dashboard designed to simplify perso
 
 📱 Mobile Ready – Fully responsive layout with optimized sidebar and transitions.
 
+📷Preview
+
+![alt text](image.png)
+
 🧱 Project Structure
 
 financial-ui/
