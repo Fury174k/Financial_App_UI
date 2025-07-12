@@ -98,7 +98,7 @@ export default function Expenses({ className }) {
   if (!monthlyBudget) {
     return (
       <div className={`${className} bg-white p-4 rounded-lg shadow-sm border border-gray-100`}>
-        <h2 className="mb-4 text-lg font-semibold text-indigo-800">Monthly Expenses</h2>
+        <h2 className="mb-4 font-bold text-indigo-800 text-md">Monthly Expenses</h2>
         <div className="py-8 text-center">
           <div className="mb-4 text-4xl">📊</div>
           <h3 className="mb-2 text-lg font-medium text-gray-800">Set Your Budget</h3>

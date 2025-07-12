@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function AddAccount() {
  const [form, setForm] = useState({
@@ -9,24 +10,44 @@ export default function AddAccount() {
  
  const [loading, setLoading] = useState(false);
  const [alert, setAlert] = useState({ message: "", type: "info" });
+ const navigate = useNavigate();
 
  const handleChange = (e) => {
    setForm({ ...form, [e.target.name]: e.target.value });
  };
 
- const handleSubmit = (e) => {
+ const handleSubmit = async (e) => {
    e.preventDefault();
    setLoading(true);
-   
-   // Simulate API call
-   setTimeout(() => {
-     setAlert({ message: "Account added successfully!", type: "success" });
+   try {
+     // Actual API call to add account
+     const token = localStorage.getItem("authToken");
+     const response = await fetch("https://financial-tracker-api-1wlt.onrender.com/api/accounts/", {
+       method: "POST",
+       headers: {
+         "Content-Type": "application/json",
+         Authorization: `Token ${token}`,
+       },
+       body: JSON.stringify(form),
+     });
+     if (response.ok) {
+       setAlert({ message: "Account added successfully!", type: "success" });
+       setLoading(false);
+       setTimeout(() => {
+         navigate("/");
+       }, 1500);
+     } else {
+       setAlert({ message: "Failed to add account.", type: "error" });
+       setLoading(false);
+     }
+   } catch (error) {
+     setAlert({ message: "Failed to add account.", type: "error" });
      setLoading(false);
-   }, 1000);
+   }
  };
 
  const handleBackToLogin = () => {
-   console.log('Navigate to login');
+   navigate('/login');
  };
 
  // Loading state

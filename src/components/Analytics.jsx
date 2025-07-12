@@ -1,55 +1,40 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line } from 'recharts';
-import { TrendingUp, DollarSign, PieChart, Brain, Calendar, Target } from 'lucide-react';
-import { AuthContext } from '../context/AuthContext';
+import { TrendingUp, DollarSign, PieChart, Brain, Calendar } from 'lucide-react';
 
 const ExpenseAnalyticsDashboard = () => {
-  const { authToken: userToken } = useContext(AuthContext);
-  const [weeklyData, setWeeklyData] = useState([]);
-  const [topExpenses, setTopExpenses] = useState([]);
-  const [categoryData, setCategoryData] = useState([]);
-  const [predictionData, setPredictionData] = useState([]);
-  const [loading, setLoading] = useState(false);
+  // Mock data for demonstration
+  const [weeklyData] = useState([
+    { day: 'Mon', amount: 120 },
+    { day: 'Tue', amount: 80 },
+    { day: 'Wed', amount: 150 },
+    { day: 'Thu', amount: 90 },
+    { day: 'Fri', amount: 200 },
+    { day: 'Sat', amount: 250 },
+    { day: 'Sun', amount: 180 }
+  ]);
+  const [topExpenses] = useState([
+    { name: 'Groceries', amount: 450 },
+    { name: 'Gas', amount: 320 },
+    { name: 'Restaurants', amount: 280 },
+    { name: 'Entertainment', amount: 150 }
+  ]);
+  const [categoryData] = useState([
+    { category: 'Food', amount: 730 },
+    { category: 'Transport', amount: 320 },
+    { category: 'Entertainment', amount: 180 },
+    { category: 'Shopping', amount: 240 }
+  ]);
+  const [predictionData] = useState([
+    { period: 'Week 1', actual: 450, predicted: 440 },
+    { period: 'Week 2', actual: 380, predicted: 400 },
+    { period: 'Week 3', actual: 520, predicted: 500 },
+    { period: 'Week 4', actual: 480, predicted: 460 },
+    { period: 'Next Week', actual: null, predicted: 475 },
+    { period: 'Next Month', actual: null, predicted: 1580 }
+  ]);
+  const [loading] = useState(false);
   const [activeTab, setActiveTab] = useState('weekly');
-
-  const fetchAnalyticsData = async () => {
-    setLoading(true);
-    try {
-      const [weeklyRes, topRes, categoryRes, predWeekRes, predMonthRes] = await Promise.all([
-        fetch('/api/analytics/weekly-spending/', { headers: { Authorization: `Token ${userToken}` } }),
-        fetch('/api/analytics/top-expenses/', { headers: { Authorization: `Token ${userToken}` } }),
-        fetch('/api/analytics/by-category/', { headers: { Authorization: `Token ${userToken}` } }),
-        fetch('/api/analytics/predict-weekly/', { headers: { Authorization: `Token ${userToken}` } }),
-        fetch('/api/analytics/predict-monthly/', { headers: { Authorization: `Token ${userToken}` } }),
-      ]);
-
-      const weekly = await weeklyRes.json();
-      const top = await topRes.json();
-      const category = await categoryRes.json();
-      const weeklyPrediction = await predWeekRes.json();
-      const monthlyPrediction = await predMonthRes.json();
-
-      setWeeklyData(weekly);
-      setTopExpenses(top);
-      setCategoryData(category);
-
-      setPredictionData([
-        ...(weeklyPrediction.history || []),
-        { period: 'Next Week', actual: null, predicted: weeklyPrediction.prediction },
-        { period: 'Next Month', actual: null, predicted: monthlyPrediction.prediction }
-      ]);
-
-    } catch (error) {
-      console.error('Error fetching analytics:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchAnalyticsData();
-    // eslint-disable-next-line
-  }, []);
 
   const formatCurrency = (amount) => {
     return new Intl.NumberFormat('en-US', {
@@ -61,9 +46,9 @@ const ExpenseAnalyticsDashboard = () => {
   const CustomTooltip = ({ active, payload, label }) => {
     if (active && payload && payload.length) {
       return (
-        <div className="p-3 bg-white border border-gray-200 rounded-lg shadow-lg">
-          <p className="font-medium text-gray-900">{label}</p>
-          <p className="text-blue-600">
+        <div className="p-2 bg-white border border-gray-200 rounded-lg shadow-lg">
+          <p className="font-medium text-gray-900 text-xs">{label}</p>
+          <p className="text-indigo-600 text-xs">
             Amount: {formatCurrency(payload[0].value)}
           </p>
         </div>
@@ -72,20 +57,20 @@ const ExpenseAnalyticsDashboard = () => {
     return null;
   };
 
-  const StatCard = ({ title, value, icon: Icon, trend, color = "blue" }) => (
-    <div className="p-6 bg-white border border-gray-100 shadow-sm rounded-xl">
+  const StatCard = ({ title, value, icon: Icon, trend, color = "indigo" }) => (
+    <div className="p-2 bg-white border border-gray-100 shadow-sm rounded-lg">
       <div className="flex items-center justify-between">
-        <div>
-          <p className="text-sm font-medium text-gray-600">{title}</p>
-          <p className="mt-1 text-2xl font-bold text-gray-900">{value}</p>
+        <div className="flex-1">
+          <p className="text-xs font-medium text-gray-600">{title}</p>
+          <p className="mt-1 text-sm font-bold text-gray-900">{value}</p>
           {trend && (
-            <p className={`text-sm mt-1 ${trend > 0 ? 'text-red-600' : 'text-green-600'}`}>
-              {trend > 0 ? '↑' : '↓'} {Math.abs(trend)}% from last week
+            <p className={`text-xs mt-1 ${trend > 0 ? 'text-red-600' : 'text-green-600'}`}>
+              {trend > 0 ? '↑' : '↓'} {Math.abs(trend)}%
             </p>
           )}
         </div>
-        <div className={`p-3 rounded-full bg-${color}-100`}>
-          <Icon className={`w-6 h-6 text-${color}-600`} />
+        <div className={`p-2 rounded-full bg-${color}-100`}>
+          <Icon className={`w-3 h-3 text-${color}-600`} />
         </div>
       </div>
     </div>
@@ -95,256 +80,237 @@ const ExpenseAnalyticsDashboard = () => {
   const avgDailySpending = totalWeeklySpending / 7;
 
   return (
-    <div className="min-h-screen p-4 bg-gray-50 md:p-6">
-      <div className="mx-auto max-w-7xl">
+    <div className="h-screen p-4 bg-gray-50 overflow-hidden">
+      <div className="h-full flex flex-col">
         {/* Header */}
-        <div className="mb-8">
-          <h1 className="mb-2 text-3xl font-bold text-gray-900">Expense Analytics</h1>
-          <p className="text-gray-600">Track your spending patterns and get insights</p>
+        <div className="mb-3">
+          <h1 className="text-xl font-bold text-indigo-800">Expense Analytics</h1>
+          <p className="text-gray-600 text-xs">Track your spending patterns and get insights</p>
         </div>
 
-        {/* Stats Cards */}
-        <div className="grid grid-cols-1 gap-6 mb-8 md:grid-cols-2 lg:grid-cols-4">
-          <StatCard
-            title="This Week"
-            value={formatCurrency(totalWeeklySpending)}
-            icon={DollarSign}
-            trend={12.5}
-            color="blue"
-          />
-          <StatCard
-            title="Daily Average"
-            value={formatCurrency(avgDailySpending)}
-            icon={Calendar}
-            trend={-3.2}
-            color="green"
-          />
-          <StatCard
-            title="Top Category"
-            value="Food"
-            icon={PieChart}
-            color="purple"
-          />
-          <StatCard
-            title="Predicted Next Month"
-            value={formatCurrency(predictionData?.find(p => p.period === 'Next Month')?.predicted || 0)}
-            icon={Brain}
-            color="orange"
-         />
-        </div>
-
-        {/* Tab Navigation */}
-        <div className="flex p-1 mb-6 space-x-1 overflow-x-auto bg-gray-100 rounded-lg">
-          {[
-            { id: 'weekly', label: 'Weekly Trend', icon: TrendingUp },
-            { id: 'top', label: 'Top Expenses', icon: DollarSign },
-            { id: 'category', label: 'By Category', icon: PieChart },
-            { id: 'prediction', label: 'ML Prediction', icon: Brain }
-          ].map((tab) => (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
-              className={`flex items-center space-x-2 px-4 py-2 rounded-md text-sm font-medium transition-colors whitespace-nowrap ${
-                activeTab === tab.id
-                  ? 'bg-white text-blue-600 shadow-sm'
-                  : 'text-gray-600 hover:text-gray-900'
-              }`}
-            >
-              <tab.icon className="w-4 h-4" />
-              <span>{tab.label}</span>
-            </button>
-          ))}
-        </div>
-
-        {/* Chart Container */}
-        <div className="p-6 bg-white border border-gray-100 shadow-sm rounded-xl">
-          {loading ? (
-            <div className="flex items-center justify-center h-96">
-              <div className="w-12 h-12 border-b-2 border-blue-600 rounded-full animate-spin"></div>
+        {/* Main Content Grid */}
+        <div className="flex-1 grid grid-cols-1 lg:grid-cols-4 gap-4 min-h-0">
+          
+          {/* Left Column - Analytics Stats */}
+          <div className="lg:col-span-1 space-y-4">
+            {/* Stats Cards */}
+            <div className="space-y-3">
+              <StatCard
+                title="This Week"
+                value={formatCurrency(totalWeeklySpending)}
+                icon={DollarSign}
+                trend={12.5}
+                color="indigo"
+              />
+              <StatCard
+                title="Daily Average"
+                value={formatCurrency(avgDailySpending)}
+                icon={Calendar}
+                trend={-3.2}
+                color="green"
+              />
+              <StatCard
+                title="Top Category"
+                value="Food"
+                icon={PieChart}
+                color="purple"
+              />
+              <StatCard
+                title="Predicted Next Month"
+                value={formatCurrency(predictionData?.find(p => p.period === 'Next Month')?.predicted || 0)}
+                icon={Brain}
+                color="orange"
+              />
             </div>
-          ) : (
-            <>
-              {/* Weekly Spending Trend */}
-              {activeTab === 'weekly' && (
-                <div>
-                  <h3 className="mb-4 text-lg font-semibold text-gray-900">Weekly Spending Trend</h3>
-                  {weeklyData.length < 2 ? (
-                    <div className="flex items-center justify-center h-80">
-                      <span className="text-gray-500 text-lg">Not enough data has been collected to make the chart yet.</span>
-                    </div>
-                  ) : (
-                    <div className="h-80">
-                      <ResponsiveContainer width="100%" height="100%">
-                        <BarChart data={weeklyData}>
-                          <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-                          <XAxis 
-                            dataKey="day" 
-                            tick={{ fontSize: 12 }}
-                            stroke="#6b7280"
-                          />
-                          <YAxis 
-                            tick={{ fontSize: 12 }}
-                            stroke="#6b7280"
-                            tickFormatter={(value) => `$${value}`}
-                          />
-                          <Tooltip content={<CustomTooltip />} />
-                          <Bar 
-                            dataKey="amount" 
-                            fill="#3b82f6"
-                            radius={[4, 4, 0, 0]}
-                          />
-                        </BarChart>
-                      </ResponsiveContainer>
-                    </div>
-                  )}
-                </div>
-              )}
 
-              {/* Top Expenses */}
-              {activeTab === 'top' && (
-                <div>
-                  <h3 className="mb-4 text-lg font-semibold text-gray-900">Top Expenses This Month</h3>
-                  {topExpenses.length < 1 ? (
-                    <div className="flex items-center justify-center h-80">
-                      <span className="text-gray-500 text-lg">Not enough data has been collected to make the chart yet.</span>
-                    </div>
-                  ) : (
-                    <div className="h-80">
-                      <ResponsiveContainer width="100%" height="100%">
-                        <BarChart data={topExpenses} layout="horizontal">
-                          <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-                          <XAxis 
-                            type="number" 
-                            tick={{ fontSize: 12 }}
-                            stroke="#6b7280"
-                            tickFormatter={(value) => `$${value}`}
-                          />
-                          <YAxis 
-                            type="category" 
-                            dataKey="name" 
-                            tick={{ fontSize: 11 }}
-                            stroke="#6b7280"
-                            width={120}
-                          />
-                          <Tooltip content={<CustomTooltip />} />
-                          <Bar 
-                            dataKey="amount" 
-                            fill="#8b5cf6"
-                            radius={[0, 4, 4, 0]}
-                          />
-                        </BarChart>
-                      </ResponsiveContainer>
-                    </div>
-                  )}
-                </div>
-              )}
-
-              {/* Category Spending */}
-              {activeTab === 'category' && (
-                <div>
-                  <h3 className="mb-4 text-lg font-semibold text-gray-900">Spending by Category</h3>
-                  {categoryData.length < 1 ? (
-                    <div className="flex items-center justify-center h-80">
-                      <span className="text-gray-500 text-lg">Not enough data has been collected to make the chart yet.</span>
-                    </div>
-                  ) : (
-                    <div className="h-80">
-                      <ResponsiveContainer width="100%" height="100%">
-                        <BarChart data={categoryData}>
-                          <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-                          <XAxis 
-                            dataKey="category" 
-                            tick={{ fontSize: 12 }}
-                            stroke="#6b7280"
-                          />
-                          <YAxis 
-                            tick={{ fontSize: 12 }}
-                            stroke="#6b7280"
-                            tickFormatter={(value) => `$${value}`}
-                          />
-                          <Tooltip content={<CustomTooltip />} />
-                          <Bar 
-                            dataKey="amount" 
-                            fill="#10b981"
-                            radius={[4, 4, 0, 0]}
-                          />
-                        </BarChart>
-                      </ResponsiveContainer>
-                    </div>
-                  )}
-                </div>
-              )}
-
-              {/* ML Prediction */}
-              {activeTab === 'prediction' && (
-                <div>
-                  <h3 className="mb-4 text-lg font-semibold text-gray-900">ML-Based Expense Prediction</h3>
-                  <div className="h-80">
-                    <ResponsiveContainer width="100%" height="100%">
-                      <LineChart data={predictionData}>
-                        <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-                        <XAxis 
-                          dataKey="period" 
-                          tick={{ fontSize: 12 }}
-                          stroke="#6b7280"
-                        />
-                        <YAxis 
-                          tick={{ fontSize: 12 }}
-                          stroke="#6b7280"
-                          tickFormatter={(value) => `$${value}`}
-                        />
-                        <Tooltip content={<CustomTooltip />} />
-                        <Line 
-                          type="monotone" 
-                          dataKey="actual" 
-                          stroke="#3b82f6" 
-                          strokeWidth={3}
-                          dot={{ fill: '#3b82f6', strokeWidth: 2, r: 4 }}
-                          name="Actual"
-                        />
-                        <Line 
-                          type="monotone" 
-                          dataKey="predicted" 
-                          stroke="#f59e0b" 
-                          strokeWidth={3}
-                          strokeDasharray="5 5"
-                          dot={{ fill: '#f59e0b', strokeWidth: 2, r: 4 }}
-                          name="Predicted"
-                        />
-                      </LineChart>
-                    </ResponsiveContainer>
+            {/* Category Breakdown */}
+            <div className="bg-white border border-gray-100 shadow-sm rounded-lg p-3">
+              <h3 className="text-xs font-semibold text-gray-900 mb-2">Category Breakdown</h3>
+              <div className="space-y-1">
+                {categoryData.map((category, index) => (
+                  <div key={index} className="flex justify-between items-center">
+                    <span className="text-xs text-gray-600">{category.category}</span>
+                    <span className="text-xs font-medium text-indigo-800">{formatCurrency(category.amount)}</span>
                   </div>
-                  <div className="p-4 mt-4 rounded-lg bg-blue-50">
-                    <p className="text-sm text-blue-800">
-                      <span className="font-medium">Prediction Model:</span> Based on your spending patterns from the last 3 months, 
-                      our ML model predicts you'll spend approximately {formatCurrency(1580.25)} next month.
-                    </p>
-                  </div>
-                </div>
-              )}
-            </>
-          )}
-        </div>
+                ))}
+              </div>
+            </div>
 
-        {/* Quick Insights */}
-        <div className="grid grid-cols-1 gap-6 mt-8 md:grid-cols-2 lg:grid-cols-3">
-          <div className="p-6 bg-white border border-gray-100 shadow-sm rounded-xl">
-            <h4 className="mb-2 font-semibold text-gray-900">💡 Spending Insight</h4>
-            <p className="text-sm text-gray-600">
-              You spend most on weekends. Consider setting weekend budgets to control expenses.
-            </p>
+            {/* Top Expenses */}
+            <div className="bg-white border border-gray-100 shadow-sm rounded-lg p-3">
+              <h3 className="text-xs font-semibold text-gray-900 mb-2">Top Expenses</h3>
+              <div className="space-y-1">
+                {topExpenses.map((expense, index) => (
+                  <div key={index} className="flex justify-between items-center">
+                    <span className="text-xs text-gray-600">{expense.name}</span>
+                    <span className="text-xs font-medium text-indigo-800">{formatCurrency(expense.amount)}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
-          <div className="p-6 bg-white border border-gray-100 shadow-sm rounded-xl">
-            <h4 className="mb-2 font-semibold text-gray-900">🎯 Budget Status</h4>
-            <p className="text-sm text-gray-600">
-              You're 15% over your monthly food budget. Try meal planning to reduce costs.
-            </p>
-          </div>
-          <div className="p-6 bg-white border border-gray-100 shadow-sm rounded-xl">
-            <h4 className="mb-2 font-semibold text-gray-900">📈 Trend Alert</h4>
-            <p className="text-sm text-gray-600">
-              Transport costs increased 23% this month. Consider carpooling or public transit.
-            </p>
+
+          {/* Right Column - Charts */}
+          <div className="lg:col-span-3 flex flex-col min-h-0">
+            {/* Tab Navigation */}
+            <div className="flex p-1 mb-4 space-x-1 overflow-x-auto bg-gray-100 rounded-lg">
+              {[
+                { id: 'weekly', label: 'Weekly Trend', icon: TrendingUp },
+                { id: 'category', label: 'By Category', icon: PieChart },
+                { id: 'prediction', label: 'ML Prediction', icon: Brain }
+              ].map((tab) => (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`flex items-center space-x-2 px-3 py-2 rounded-md text-xs font-medium transition-colors whitespace-nowrap ${
+                    activeTab === tab.id
+                      ? 'bg-white text-indigo-800 shadow-sm'
+                      : 'text-gray-600 hover:text-gray-900'
+                  }`}
+                >
+                  <tab.icon className="w-4 h-4" />
+                  <span>{tab.label}</span>
+                </button>
+              ))}
+            </div>
+
+            {/* Chart Container */}
+            <div className="flex-1 p-3 bg-white border border-gray-100 shadow-sm rounded-lg max-h-[535px] flex flex-col">
+              {loading ? (
+                <div className="flex items-center justify-center h-full">
+                  <div className="w-8 h-8 border-b-2 border-indigo-600 rounded-full animate-spin"></div>
+                </div>
+              ) : (
+                <>
+                  {/* Weekly Spending Trend */}
+                  {activeTab === 'weekly' && (
+                    <div className="flex-1 flex flex-col min-h-0">
+                      <h3 className="mb-2 text-sm font-semibold text-indigo-800">Weekly Spending Trend</h3>
+                      <div className="flex-1 min-h-0" style={{ height: '200px' }}>
+                        <ResponsiveContainer width="100%" height="100%">
+                          <BarChart data={weeklyData}>
+                            <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+                            <XAxis 
+                              dataKey="day" 
+                              tick={{ fontSize: 10 }}
+                              stroke="#6b7280"
+                            />
+                            <YAxis 
+                              tick={{ fontSize: 10 }}
+                              stroke="#6b7280"
+                              tickFormatter={(value) => `${value}`}
+                            />
+                            <Tooltip content={<CustomTooltip />} />
+                            <Bar 
+                              dataKey="amount" 
+                              fill="#4f46e5"
+                              radius={[4, 4, 0, 0]}
+                            />
+                          </BarChart>
+                        </ResponsiveContainer>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Category Spending */}
+                  {activeTab === 'category' && (
+                    <div className="flex-1 flex flex-col min-h-0">
+                      <h3 className="mb-2 text-sm font-semibold text-indigo-800">Spending by Category</h3>
+                      <div className="flex-1 min-h-0" style={{ height: '200px' }}>
+                        <ResponsiveContainer width="100%" height="100%">
+                          <BarChart data={categoryData}>
+                            <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+                            <XAxis 
+                              dataKey="category" 
+                              tick={{ fontSize: 10 }}
+                              stroke="#6b7280"
+                            />
+                            <YAxis 
+                              tick={{ fontSize: 10 }}
+                              stroke="#6b7280"
+                              tickFormatter={(value) => `${value}`}
+                            />
+                            <Tooltip content={<CustomTooltip />} />
+                            <Bar 
+                              dataKey="amount" 
+                              fill="#10b981"
+                              radius={[4, 4, 0, 0]}
+                            />
+                          </BarChart>
+                        </ResponsiveContainer>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* ML Prediction */}
+                  {activeTab === 'prediction' && (
+                    <div className="flex-1 flex flex-col min-h-0">
+                      <h3 className="mb-2 text-sm font-semibold text-indigo-800">ML-Based Expense Prediction</h3>
+                      <div className="flex-1 min-h-0" style={{ height: '200px' }}>
+                        <ResponsiveContainer width="100%" height="100%">
+                          <LineChart data={predictionData}>
+                            <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+                            <XAxis 
+                              dataKey="period" 
+                              tick={{ fontSize: 10 }}
+                              stroke="#6b7280"
+                            />
+                            <YAxis 
+                              tick={{ fontSize: 10 }}
+                              stroke="#6b7280"
+                              tickFormatter={(value) => `${value}`}
+                            />
+                            <Tooltip content={<CustomTooltip />} />
+                            <Line 
+                              type="monotone" 
+                              dataKey="actual" 
+                              stroke="#4f46e5" 
+                              strokeWidth={3}
+                              dot={{ fill: '#4f46e5', strokeWidth: 2, r: 4 }}
+                              name="Actual"
+                            />
+                            <Line 
+                              type="monotone" 
+                              dataKey="predicted" 
+                              stroke="#f59e0b" 
+                              strokeWidth={3}
+                              strokeDasharray="5 5"
+                              dot={{ fill: '#f59e0b', strokeWidth: 2, r: 4 }}
+                              name="Predicted"
+                            />
+                          </LineChart>
+                        </ResponsiveContainer>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Spending Insights - Fixed under charts */}
+                  <div className="mt-4 pt-3 border-t border-gray-200">
+                    <h4 className="mb-2 text-sm font-semibold text-indigo-800">💡 Smart Insights</h4>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
+                      <div className="p-2 bg-indigo-50 border border-indigo-100 rounded-lg">
+                        <p className="text-xs text-indigo-800 font-medium">Spending Pattern</p>
+                        <p className="text-xs text-indigo-600 mt-1">
+                          You spend most on weekends. Consider setting weekend budgets.
+                        </p>
+                      </div>
+                      <div className="p-2 bg-amber-50 border border-amber-100 rounded-lg">
+                        <p className="text-xs text-amber-800 font-medium">Budget Alert</p>
+                        <p className="text-xs text-amber-600 mt-1">
+                          15% over monthly food budget. Try meal planning to save.
+                        </p>
+                      </div>
+                      <div className="p-2 bg-green-50 border border-green-100 rounded-lg">
+                        <p className="text-xs text-green-800 font-medium">Trend Notice</p>
+                        <p className="text-xs text-green-600 mt-1">
+                          Transport costs up 23%. Consider carpooling options.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </>
+              )}
+            </div>
           </div>
         </div>
       </div>

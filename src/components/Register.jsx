@@ -10,14 +10,15 @@ export default function Register() {
     });
     const [error, setError] = useState('');
     const [profilePic, setProfilePic] = useState(null);
+    const [loading, setLoading] = useState(false);
+    const [showApiDelay, setShowApiDelay] = useState(false);
     const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (formData.password !== formData.password2) {
-            setError('Passwords do not match');
-            return;
-        }
+        setLoading(true);
+        setShowApiDelay(false);
+        const delayTimer = setTimeout(() => setShowApiDelay(true), 5000);
         try {
             const form = new FormData();
             form.append('username', formData.username);
@@ -31,6 +32,9 @@ export default function Register() {
                 method: 'POST',
                 body: form,
             });
+            clearTimeout(delayTimer);
+            setShowApiDelay(false);
+            setLoading(false);
             if (response.ok) {
                 navigate('/login');
             } else {
@@ -44,6 +48,9 @@ export default function Register() {
                 setError(errorMsg);
             }
         } catch (err) {
+            clearTimeout(delayTimer);
+            setShowApiDelay(false);
+            setLoading(false);
             setError('Network error');
         }
     };
@@ -59,6 +66,12 @@ export default function Register() {
         <div className="max-w-md p-4 mx-auto mt-10 bg-white rounded shadow">
             <h2 className="mb-6 text-2xl font-bold text-indigo-800">Register</h2>
             {error && <p className="mb-4 text-red-500">{error}</p>}
+            {loading && (
+                <div className="mb-4 text-blue-500">Loading...</div>
+            )}
+            {showApiDelay && (
+                <div className="mb-4 text-yellow-600 font-semibold">The free-tier API may take a moment to respond. Please bear with us.</div>
+            )}
             <form onSubmit={handleSubmit} encType="multipart/form-data">
                 <div className="mb-4">
                     <label className="block mb-2">Username</label>

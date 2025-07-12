@@ -1,9 +1,10 @@
 import { useState } from "react";
 import {
- BrowserRouter as Router,
- Routes,
- Route,
- Navigate,
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+  Outlet,
 } from "react-router-dom";
 
 import Sidebar from "./components/Sidebar";
@@ -27,117 +28,118 @@ import CardDetails from "./components/CardDetails";
 import Analytics from "./components/Analytics";
 import Settings from "./components/Settings";
 
-function App() {
+function DashboardLayout({ refreshTrigger, handleTransactionChange }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
-   <Router>
-     <AuthProvider>
-       <Routes>
-         {/* Public Routes */}
-         <Route path="/login" element={<Login />} />
-         <Route path="/register" element={<Register />} />
+    <div className="flex min-h-screen bg-gray-100">
+      <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+      <div className="flex-1 overflow-auto">
+        <Navbar onMenuClick={() => setSidebarOpen((v) => !v)} />
+        <div className="p-4">
+          <Outlet context={{ refreshTrigger, handleTransactionChange }} />
+        </div>
+      </div>
+    </div>
+  );
+}
 
-         {/* Add Account Route - Standalone without sidebar/navbar */}
-         <Route path="/add-account" element={<AddAccount />} />
+function App() {
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
 
-         {/* Protected Layout */}
-         <Route element={<PrivateRoute />}>
-           <Route
-             path="/"
-             element={
-                <div className="flex min-h-screen bg-gray-100">
-                  <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
-                  <div className="flex-1 overflow-auto">
-                    <Navbar onMenuClick={() => setSidebarOpen((v) => !v)} />
-                    <div className="p-4">
-                      {/* First Row */}
-                      <div className="grid grid-cols-1 gap-4 mt-0 md:grid-cols-2 lg:grid-cols-4">
-                        <TotalBalance />
-                        <Expenses />
-                        <Savings />
-                        <Income />
-                      </div>
+  const handleTransactionChange = () => {
+    setRefreshTrigger((prev) => prev + 1);
+  };
 
-                      {/* Second Row */}
-                      <div className="grid grid-cols-1 lg:grid-cols-4 gap-3.5 mt-2.5">
-                        <TransactionHistory className="lg:col-span-2" />
-                        <div className="space-y-3 lg:col-span-2">
-                          <Reports />
-                          <Budget />
-                        </div>
+  return (
+    <Router>
+      <AuthProvider>
+        <Routes>
+          {/* Public Routes */}
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+
+          {/* Add Account Route - Standalone without sidebar/navbar */}
+          <Route path="/add-account" element={<AddAccount />} />
+
+          {/* Protected Layout */}
+          <Route element={<PrivateRoute />}>
+            <Route
+              element={
+                <DashboardLayout
+                  refreshTrigger={refreshTrigger}
+                  handleTransactionChange={handleTransactionChange}
+                />
+              }
+            >
+              <Route
+                path="/"
+                element={
+                  <>
+                    <div className="grid grid-cols-1 gap-4 mt-0 md:grid-cols-2 lg:grid-cols-4">
+                      <TotalBalance refreshTrigger={refreshTrigger} />
+                      <Expenses />
+                      <Savings />
+                      <Income />
+                    </div>
+
+                    <div className="grid grid-cols-1 lg:grid-cols-4 gap-3.5 mt-2.5">
+                      <TransactionHistory className="lg:col-span-2" refreshTrigger={refreshTrigger} />
+                      <div className="space-y-3 lg:col-span-2">
+                        <Reports />
+                        <Budget />
                       </div>
                     </div>
-                  </div>
-                </div>
-             }
-           />
-           <Route
-             path="/add-expense"
-             element={
-               <div className="flex min-h-screen bg-gray-100">
-                 <Sidebar />
-                 <div className="flex-1 overflow-auto">
-                   <Navbar />
-                   <div className="p-6">
-                     <AddExpense className="max-w-xl mx-auto" />
-                   </div>
-                 </div>
-               </div>
-             }
-           />
-           <Route path="/budget-setup" element={<BudgetSetup />} />
-           <Route path="/savings-goal" element={<SavingsGoal />} />
-           <Route
-             path="/cards"
-             element={
-               <div className="flex min-h-screen bg-gray-100">
-                 <Sidebar />
-                 <div className="flex-1 overflow-auto">
-                   <Navbar />
-                   <div className="p-6">
-                     <CardDetails />
-                   </div>
-                 </div>
-               </div>
-             }
-           />
-           <Route
-             path="/analytics"
-             element={
-               <div className="flex min-h-screen bg-gray-100">
-                 <Sidebar />
-                 <div className="flex-1 overflow-auto">
-                   <Navbar />
-                   <div className="p-6">
-                     <Analytics />
-                   </div>
-                 </div>
-               </div>
-             }
-           />
-           <Route
-             path="/settings"
-             element={
-               <div className="flex min-h-screen bg-gray-100">
-                 <Sidebar />
-                 <div className="flex-1 overflow-auto">
-                   <Navbar />
-                   <div className="p-6">
-                     <Settings />
-                   </div>
-                 </div>
-               </div>
-             }
-           />
-         </Route>
+                  </>
+                }
+              />
 
-         {/* Catch-all Redirect */}
-         <Route path="*" element={<Navigate to="/login" replace />} />
-       </Routes>
-     </AuthProvider>
-   </Router>
- );
+              <Route
+                path="/add-expense"
+                element={
+                  <div className="p-6">
+                    <AddExpense
+                      className="max-w-7xl mx-auto"
+                      onTransactionChange={handleTransactionChange}
+                    />
+                  </div>
+                }
+              />
+              <Route path="/budget-setup" element={<BudgetSetup />} />
+              <Route path="/savings-goal" element={<SavingsGoal />} />
+              <Route
+                path="/cards"
+                element={
+                  <div className="p-2">
+                    <CardDetails />
+                  </div>
+                }
+              />
+              <Route
+                path="/analytics"
+                element={
+                  <div className="p-2">
+                    <Analytics />
+                  </div>
+                }
+              />
+              <Route
+                path="/settings"
+                element={
+                  <div className="p-2">
+                    <Settings />
+                  </div>
+                }
+              />
+            </Route>
+          </Route>
+
+          {/* Catch-all Redirect */}
+          <Route path="*" element={<Navigate to="/login" replace />} />
+        </Routes>
+      </AuthProvider>
+    </Router>
+  );
 }
 
 export default App;

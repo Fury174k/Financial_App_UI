@@ -1,6 +1,4 @@
-import { useState, useEffect } from "react";
 import React from "react";
-
 
 function Dashboard() {
   return (
@@ -27,8 +25,7 @@ function Dashboard() {
         </div>
        </div>
     </div>
-);
+  );
 }
-
 
 export default Dashboard;

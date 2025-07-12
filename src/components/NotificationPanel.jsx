@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { Bell, X, Check } from 'lucide-react';
 
-const NotificationPanel = ({ userToken, apiBaseUrl = 'http://localhost:8000', showBellWithBadge = true }) => {
+const NotificationPanel = ({ userToken, apiBaseUrl = 'https://financial-tracker-api-1wlt.onrender.com', showBellWithBadge = true }) => {
   const [notifications, setNotifications] = useState([]);
   const [open, setOpen] = useState(false);
   const panelRef = useRef();
@@ -61,7 +61,7 @@ const NotificationPanel = ({ userToken, apiBaseUrl = 'http://localhost:8000', sh
     };
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [userToken]);
+  }, [userToken, fetchNotifications]);
 
   const unreadCount = notifications.filter((n) => !n.is_read).length;
 
