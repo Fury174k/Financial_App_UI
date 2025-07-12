@@ -44,7 +44,7 @@ export default function TotalBalance({ className, refreshTrigger }) {
   useEffect(() => {
     if (!authToken) return;
     fetchFreshData();
-  }, [authToken, refreshTrigger, fetchFreshData]);
+  }, [authToken, refreshTrigger]);
 
   const handleRetry = () => {
     fetchFreshData();

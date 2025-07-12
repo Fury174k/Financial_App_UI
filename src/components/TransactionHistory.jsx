@@ -38,7 +38,7 @@ export default function TransactionHistory({ className, refreshTrigger }) {
 
   useEffect(() => {
     fetchTransactions();
-  }, [authToken, navigate, refreshTrigger, fetchTransactions]); // Add fetchTransactions to dependencies
+  }, [authToken, navigate, refreshTrigger]); // Remove fetchTransactions from dependencies
 
   const handleDelete = async (id) => {
     try {
